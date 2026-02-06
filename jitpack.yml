@@ -1,0 +1,11 @@
+jdk:
+  - openjdk17
+
+before_install:
+  - java -version
+
+build:
+  gradle:
+    tasks:
+      - clean
+      - :genericprinter:build
