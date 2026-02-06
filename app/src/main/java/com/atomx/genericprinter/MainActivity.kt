@@ -11,6 +11,10 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -104,31 +108,73 @@ class MainActivity : AppCompatActivity() {
     /**
      * Print using selected device
      */
+//    @SuppressLint("MissingPermission")
+//    private fun printToDevice(device: BluetoothDevice) {
+//        Toast.makeText(this, "Connecting to ${device.name}", Toast.LENGTH_SHORT).show()
+//
+//        val printer = PrinterFactory.bluetooth(
+//            mac = device.address,
+//            config = PrinterConfig(paperWidthPx = 384, debug = true)
+//        )
+//
+//        if (!printer.connect()) {
+//            Toast.makeText(this, "Failed to connect ${device.name}", Toast.LENGTH_LONG).show()
+//            return
+//        }
+//
+//        try {
+//            printer.reset()
+//            printer.printText("Hello from AtomX")
+//            val bmp = BitmapFactory.decodeResource(resources, R.drawable.ali)
+//            printer.printBitmap(bmp, center = true)
+//            printer.feed(3)
+//            printer.cut()
+//        } catch (e: Exception) {
+//            Toast.makeText(this, "Print error: ${e.message}", Toast.LENGTH_LONG).show()
+//        } finally {
+//            printer.disconnect()
+//        }
+//    }
+
+
     @SuppressLint("MissingPermission")
     private fun printToDevice(device: BluetoothDevice) {
         Toast.makeText(this, "Connecting to ${device.name}", Toast.LENGTH_SHORT).show()
 
-        val printer = PrinterFactory.bluetooth(
-            mac = device.address,
-            config = PrinterConfig(paperWidthPx = 384, debug = true)
-        )
+        lifecycleScope.launch {
+            val success = withContext(Dispatchers.IO) {
+                try {
+                    val printer = PrinterFactory.bluetooth(
+                        mac = device.address,
+                        config = PrinterConfig(paperWidthPx = 384, debug = true)
+                    )
 
-        if (!printer.connect()) {
-            Toast.makeText(this, "Failed to connect ${device.name}", Toast.LENGTH_LONG).show()
-            return
-        }
+                    if (!printer.connect()) return@withContext false
 
-        try {
-            printer.reset()
-            printer.printText("Hello from AtomX")
-            val bmp = BitmapFactory.decodeResource(resources, R.drawable.ali)
-            printer.printBitmap(bmp, center = true)
-            printer.feed(3)
-            printer.cut()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Print error: ${e.message}", Toast.LENGTH_LONG).show()
-        } finally {
-            printer.disconnect()
+                    printer.reset()
+                    printer.printText("Hello from AtomX")
+
+                    val bmp = BitmapFactory.decodeResource(resources, R.drawable.ali)
+                    printer.printBitmap(bmp, center = true)
+
+                    printer.feed(3)
+                    printer.cut()
+                    printer.disconnect()
+                    true
+                } catch (e: Exception) {
+                    e
+                }
+            }
+
+            when (success) {
+                true -> Toast.makeText(this@MainActivity, "Print done ✅", Toast.LENGTH_SHORT).show()
+                is Exception -> Toast.makeText(
+                    this@MainActivity,
+                    "Print error: ${success.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                else -> Toast.makeText(this@MainActivity, "Failed to connect", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

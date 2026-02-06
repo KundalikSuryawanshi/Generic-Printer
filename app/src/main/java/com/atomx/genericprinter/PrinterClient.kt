@@ -1,6 +1,11 @@
-package com.atomx.genericprinter
-
 import android.graphics.Bitmap
+import com.atomx.genericprinter.EscPosCommands
+import com.atomx.genericprinter.EscPosImage
+import com.atomx.genericprinter.PrinterConfig
+import com.atomx.genericprinter.PrinterConnection
+import com.atomx.genericprinter.PrinterLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class PrinterClient(
     private val connection: PrinterConnection,
@@ -10,6 +15,16 @@ class PrinterClient(
     init {
         PrinterLogger.enabled = config.debug
     }
+
+    suspend fun connectAsync(): Boolean = withContext(Dispatchers.IO) {
+        connect()
+    }
+
+    suspend fun printAsync(block: PrinterClient.() -> Unit) =
+        withContext(Dispatchers.IO) {
+            ensureConnected()
+            block()
+        }
 
     fun connect(): Boolean {
         PrinterLogger.d("connect() called")
@@ -29,8 +44,9 @@ class PrinterClient(
 
     fun printBitmap(bitmap: Bitmap, center: Boolean = true) {
         ensureConnected()
-
-        if (center) connection.write(EscPosCommands.ALIGN_CENTER) else connection.write(EscPosCommands.ALIGN_LEFT)
+        connection.write(
+            if (center) EscPosCommands.ALIGN_CENTER else EscPosCommands.ALIGN_LEFT
+        )
         val bytes = EscPosImage.toRasterBytes(bitmap, config.paperWidthPx)
         connection.write(bytes)
         connection.write(EscPosCommands.LF)
@@ -43,7 +59,9 @@ class PrinterClient(
 
     fun cut(partial: Boolean = true) {
         ensureConnected()
-        connection.write(if (partial) EscPosCommands.CUT_PARTIAL else EscPosCommands.CUT_FULL)
+        connection.write(
+            if (partial) EscPosCommands.CUT_PARTIAL else EscPosCommands.CUT_FULL
+        )
     }
 
     fun reset() {
@@ -52,6 +70,8 @@ class PrinterClient(
     }
 
     private fun ensureConnected() {
-        if (!connection.isConnected()) throw IllegalStateException("Printer not connected")
+        if (!connection.isConnected()) {
+            throw IllegalStateException("Printer not connected")
+        }
     }
 }

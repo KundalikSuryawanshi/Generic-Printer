@@ -1,5 +1,6 @@
 package com.atomx.genericprinter
 
+import PrinterClient
 import android.bluetooth.BluetoothAdapter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
