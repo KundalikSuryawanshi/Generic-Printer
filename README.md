@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.<YourGitHubUsername>:GenericPrinter:v1.0.0"
+    implementation "com.github.KundalikSuryawanshi:GenericPrinter:v1.0.0"
 }
 
 
