@@ -21,6 +21,8 @@ dependencyResolutionManagement {
     }
 }
 
+
+
 rootProject.name = "GenericPrinter"
 
 include ':app'            // demo app
