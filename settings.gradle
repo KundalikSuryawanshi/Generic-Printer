@@ -21,9 +21,10 @@ dependencyResolutionManagement {
     }
 }
 
-
-
 rootProject.name = "GenericPrinter"
 
-include ':app'            // demo app
-include ':genericprinter' // library module
+include(":genericprinter")
+
+if (System.getenv("JITPACK") == null) {
+    include(":app")
+}
