@@ -13,6 +13,21 @@ The primary goal of this project is to develop a high-performance Bluetooth ther
 
 ### Contributing
 
+# GenericPrinter
+
+Lightweight ESC/POS Bluetooth printer library for Android.
+
+## Installation
+```gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation "com.github.<YourGitHubUsername>:GenericPrinter:v1.0.0"
+}
+
+
 Contributions from developers are highly encouraged and welcomed! If you're interested in contributing, here's how you can get started:
 
 ```
