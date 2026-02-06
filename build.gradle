@@ -6,5 +6,9 @@ plugins {
 
 allprojects {
     group = "com.github.KundalikSuryawanshi"
-    version = "1.0.5"
+    version = "1.0.7"
+}
+
+tasks.register("publishToMavenLocal") {
+    dependsOn(":genericprinter:publishToMavenLocal")
 }
