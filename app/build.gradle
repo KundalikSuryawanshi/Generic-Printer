@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id "maven-publish"
+
 }
 
 android {
@@ -51,4 +53,19 @@ dependencies {
 
     // Test
     testImplementation libs.junit
+}
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = "com.github.KundalikSuryawanshi"
+                artifactId = "Generic-Printer"
+                version = "1.0.2"
+            }
+        }
+    }
 }
