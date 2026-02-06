@@ -6,5 +6,5 @@ plugins {
 
 allprojects {
     group = "com.github.KundalikSuryawanshi"
-    version = "1.0.0"
+    version = "1.0.5"
 }

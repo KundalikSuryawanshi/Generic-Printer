@@ -2,30 +2,21 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     id "maven-publish"
-
 }
 
 android {
-    namespace 'com.atomx.genericprinter'
+    namespace "com.atomx.genericprinter"
     compileSdk 35
 
     defaultConfig {
         minSdk 21
         targetSdk 34
-
-        // Version for library publishing
-        versionCode 1
-        versionName "1.0.0"
-
         consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'
-            ), 'proguard-rules.pro'
         }
     }
 
@@ -35,36 +26,26 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
 }
 
 dependencies {
-
-    // Core Android
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
-
-    // Coroutines (needed for async printing)
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
-
-    // Image handling (if bitmap utils depend on it)
     implementation "com.github.bumptech.glide:glide:4.14.2"
-
-    // Test
     testImplementation libs.junit
 }
-
 
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
                 from components.release
-
                 groupId = "com.github.KundalikSuryawanshi"
                 artifactId = "Generic-Printer"
-                version = "1.0.2"
+                version = project.version
             }
         }
     }
